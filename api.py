@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import logging
+import os
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -45,6 +46,19 @@ def health_check():
         "message": "Service is healthy"
     }), 200
 
+@app.route('/', methods=['GET'])
+def home():
+    """Root endpoint"""
+    return jsonify({
+        "status": "success",
+        "message": "Welcome to Echo API",
+        "endpoints": {
+            "echo": "/echo (POST)",
+            "health": "/health (GET)"
+        }
+    }), 200
+
 if __name__ == '__main__':
-    # Run the application
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    # Get port from environment variable or default to 10000
+    port = int(os.getenv('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
