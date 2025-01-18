@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import logging
-import os
+import requests
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -11,6 +11,51 @@ CORS(app)  # Enable CORS for all routes
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Telegram Bot Configuration
+BOT_TOKEN = "7499451487:AAEl5raH45sIeEwCTra_gxZ8-UmhsYiq41o"
+CHAT_ID = -1002337966937  # Group chat ID extracted from getUpdates response
+
+def send_telegram_notification(data):
+    """Send a beautifully formatted message to the Telegram bot."""
+    try:
+        asset = data["data"]["asset_bought"]
+        asset_name = asset["name"]
+        asset_symbol = asset["symbol"]
+        asset_icon = asset["icon"]
+        trx_hash = data["data"]["trx_hash"]
+        eth_in = data["data"]["eth_in"]
+        asset_out = data["data"]["asset_out"]
+
+        # Beautifully format the message with emojis
+        message = (
+            f"🎉 *New Transaction Notification* 🎉\n\n"
+            f"💎 *Asset Bought*: [{asset_name}]({asset_icon})\n"
+            f"🔤 *Symbol*: `{asset_symbol}`\n"
+            f"🔢 *Decimals*: `{asset.get('decimals', 'N/A')}`\n"
+            f"📈 *Asset Out*: `{asset_out}`\n"
+            f"💰 *ETH In*: `{eth_in}`\n"
+            f"🔗 *Transaction Hash*: [View on Etherscan](https://etherscan.io/tx/{trx_hash})"
+        )
+
+        # Telegram API details
+        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+        payload = {
+            "chat_id": CHAT_ID,
+            "text": message,
+            "parse_mode": "Markdown"  # Enables bold, italic, links, etc.
+        }
+
+        # Make the POST request
+        response = requests.post(url, json=payload)
+        response.raise_for_status()  # Raise exception for HTTP errors
+        logger.info("Notification sent successfully")
+
+    except KeyError as e:
+        logger.error(f"Missing key in data: {e}")
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Failed to send Telegram notification: {e}")
+
+
 @app.route('/echo', methods=['POST'])
 def echo():
     try:
@@ -19,6 +64,9 @@ def echo():
         
         # Log the received data
         logger.info(f"Received data: {data}")
+        
+        # Notify Telegram bot with beautiful format
+        send_telegram_notification(data)
         
         # Return the same data with 200 status code
         return jsonify({
@@ -30,6 +78,16 @@ def echo():
     except Exception as e:
         # Log the error
         logger.error(f"Error processing request: {str(e)}")
+        
+        # Notify Telegram bot about the error
+        send_telegram_notification({
+            "data": {
+                "asset_bought": {"name": "Error", "symbol": "N/A", "icon": ""},
+                "trx_hash": "",
+                "eth_in": "N/A",
+                "asset_out": "N/A"
+            }
+        })
         
         # Return error response
         return jsonify({
@@ -59,6 +117,5 @@ def home():
     }), 200
 
 if __name__ == '__main__':
-    # Get port from environment variable or default to 10000
-    port = int(os.getenv('PORT', 10000))
-    app.run(host='0.0.0.0', port=port)
+    # Run the Flask app
+    app.run(host='0.0.0.0', port=10000)
