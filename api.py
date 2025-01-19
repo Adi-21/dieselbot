@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 # Telegram Bot Configuration
 BOT_TOKEN = "7499451487:AAEl5raH45sIeEwCTra_gxZ8-UmhsYiq41o"
-CHAT_ID = -1002337966937  # Group chat ID extracted from getUpdates response
+CHAT_ID = -1002279477839  # Group chat ID extracted from getUpdates response
 
 def send_telegram_notification(data):
     """Send a beautifully formatted message to the Telegram bot."""
