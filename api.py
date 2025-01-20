@@ -34,7 +34,7 @@ def send_telegram_notification(data):
             f"🔢 *Decimals*: `{asset.get('decimals', 'N/A')}`\n"
             f"📈 *Asset Out*: `{asset_out}`\n"
             f"💰 *ETH In*: `{eth_in}`\n"
-            f"🔗 *Transaction Hash*: [View on Etherscan](https://app.fuel.network/tx/{trx_hash})"
+            f"🔗 *Transaction Hash*: [View on Fuel Explorer](https://app.fuel.network/tx/{trx_hash})"
         )
 
         # Telegram API details
