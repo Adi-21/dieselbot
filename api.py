@@ -157,16 +157,7 @@ def home():
         }
     }), 200
 
-@app.route('/',methods=['GET'])
-def home():
-    return jsonify({
-        "status": "success",
-        "message": "Welcome to Echo API",
-        "endpoints": {
-            "echo": "/echo (POST)",
-            "health": "/health (GET)"
-        }
-    }), 200
+
 
 @app.route('/echo-bot2', methods=['POST'])
 def echo_bot2():
