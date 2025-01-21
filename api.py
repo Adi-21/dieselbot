@@ -32,7 +32,7 @@ def send_telegram_notification(data):
 
         # Beautifully format the message with emojis
         message = (
-            f"🎉 *New Transaction Notification* 🎉\n\n"
+            f"🎉 *New Transaction on Diesel Dex* 🎉\n\n"
             f"💎 *Asset Bought*: [{asset_name}]({asset_icon})\n"
             f"🔤 *Symbol*: `{asset_symbol}`\n"
             f"📈 *Asset Out*: `{asset_out}`\n"
@@ -71,7 +71,7 @@ def send_telegram_notification_bot2(data):
 
         # Beautifully format the message with emojis
         message = (
-            f"🎉 *New Transaction Notification* 🎉\n\n"
+            f"🎉 *New Transaction on Diesel Dex* 🎉\n\n"
             f"💎 *Asset Bought*: [{asset_name}]({asset_icon})\n"
             f"🔤 *Symbol*: `{asset_symbol}`\n"
             f"📈 *Asset Out*: `{asset_out}`\n"
